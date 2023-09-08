@@ -110,8 +110,8 @@ The method "GetMethodsDynamicImplementations" of this class accepts lambda expre
 If the web request passes the regex condition and matches with a qualified service interface (marked with WebApi attributes) that has implementation on current container,
 middleware extracts params json and calls the method and makes a json from the returned result to send back to client codes.
 
-"MonoMicroservices.Library.Microservices.WebApiHandler.DynamicWebApiHandler" takes the part of handling interface method calls and make the web requests.
-It registers the interfaces in DryIoc container and handles te service key part, all at Startup, thread-safe and process is started through "DependencyRegistrar" events which are called by IocService.
+"MonoMicroservices.Library.Microservices.WebApiHandler.DynamicWebApiHandler" takes the part of handling interface method calls and makes the web requests.
+It registers the interfaces in DryIoc container and handles the "service key" part, all at Startup, thread-safe and process is started through "DependencyRegistrar" events which are called by IocService.
 
 ## What is supported
  1. Dto (record,class,...) parameters
