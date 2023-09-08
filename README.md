@@ -66,13 +66,13 @@ public interface ISearchService
 ```yml
 - IsInMicroservicesMode=true
 - 'MicroservicesConnections={
-	"SearchDomain":"http://host.docker.internal:5102",
-	#"SearchDomain" is the 2nd part of interface's namespace 
-	#For our earlier example it is the "DomainName" : MySolution.DomainName.MoreSpaces.IServiceInterface.Method(myparams)
-	
-	"CollectorService":{"Service1":"http://host.docker.internal:5102","Service2":"http://host.docker.internal:5102"}
-	#We have one interface which is implemented in different projects running on different containers.
-	#"CollectorService" is a group name for multi-resolves. (Described in "CSharp side")
+   "SearchDomain":"http://host.docker.internal:5102",
+   #"SearchDomain" is the 2nd part of interface's namespace 
+   #For our earlier example it is the "DomainName" : MySolution.DomainName.MoreSpaces.IServiceInterface.Method(myparams)
+   
+   "CollectorService":{"Service1":"http://host.docker.internal:5102","Service2":"http://host.docker.internal:5102"}
+   #We have one interface which is implemented in different projects running on different containers.
+   #"CollectorService" is a group name for multi-resolves. (Described in "CSharp side")
 }'
 ```
 CSharp side:
