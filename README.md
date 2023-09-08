@@ -122,9 +122,9 @@ It registers the interfaces in DryIoc container and handles te service key part,
  6. Multiple interface implementations on different containers :<br>	
 ```cs
 public interface IMyService {}
-[Export("ContainerOneServiceKey", typeof(ICollectorService))]
+[Export("ContainerOneServiceKey", typeof(IMyService))]
 public class MyService : IMyService {}	//in the namespace of container one
-[Export("ContainerTwoServiceKey", typeof(ICollectorService))]
+[Export("ContainerTwoServiceKey", typeof(IMyService))]
 public class MyService : IMyService {} //in the namespace of container two
 IocService.Resolve<IEnumerable<IMyService>>().Selecy(service=>...service.__ServiceKey...);
 IocService.Resolve<IMyService>("ContainerTwoServiceKey")
