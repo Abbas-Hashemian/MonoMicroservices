@@ -1,0 +1,29 @@
+version: '3.4'
+  
+services:
+  user:
+    extends:
+      file: docker-compose.shared.yml
+      service: shared_configs
+    image: ${REGISTRY:-monomicroservices}/user
+    ports:
+      - "5100:80"
+      # - "5101:443"
+    build:
+       args: #will be passed to Dockerfile
+        - ServiceRootDir=User
+        - WebProjectName=UI
+    depends_on:
+      - search
+  search:
+    extends:
+      file: docker-compose.shared.yml
+      service: shared_configs
+    image: ${REGISTRY:-monomicroservices}/search
+    ports:
+      - "5102:80"
+      # - "5103:443"
+    build:
+      args:
+        - ServiceRootDir=Search
+        - WebProjectName=SearchWebApi

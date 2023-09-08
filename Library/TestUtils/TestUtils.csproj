@@ -1,0 +1,9 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+	<PropertyGroup>
+		<ProjectDomainName>TestUtils</ProjectDomainName>
+		<MyProjectType>NUnitTest</MyProjectType>
+	</PropertyGroup>
+	<Import Project="..\..\CsprojBase.csproj" />
+
+</Project>

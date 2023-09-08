@@ -1,0 +1,13 @@
+.vs
+.vs/*
+**/.vs*
+*/bin
+*/obj
+**/bin
+**/obj
+*/bin/*
+*/obj/*
+/bin/*
+/obj/*
+/output
+/Packages

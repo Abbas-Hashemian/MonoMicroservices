@@ -1,0 +1,472 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>DryIoc.MefAttributedModel</name>
+    </assembly>
+    <members>
+        <member name="T:DryIoc.MefAttributedModel.AttributedModel">
+            <summary>Implements MEF Attributed Programming Model.
+            Documentation is available at https://github.com/dadhi/DryIoc/blob/master/docs/DryIoc.Docs/Extensions/MefAttributedModel.md </summary>
+        </member>
+        <member name="F:DryIoc.MefAttributedModel.AttributedModel.SupportedReuseTypes">
+            <summary>Maps the supported reuse types to respective DryIoc reuse.</summary>
+        </member>
+        <member name="M:DryIoc.MefAttributedModel.AttributedModel.WithMefRules(DryIoc.Rules)">
+            <summary>Adjusts the rules to provide the full MEF compatibility.</summary>
+        </member>
+        <member name="M:DryIoc.MefAttributedModel.AttributedModel.WithMef(DryIoc.IContainer)">
+            <summary>Adjusts the rules with <see cref="M:DryIoc.MefAttributedModel.AttributedModel.WithMefRules(DryIoc.Rules)"/> to provide the full MEF compatibility.
+            In addition registers the MEF specific wrappers, and adds support for <see cref="T:System.ComponentModel.Composition.IPartImportsSatisfiedNotification"/>.</summary>
+        </member>
+        <member name="M:DryIoc.MefAttributedModel.AttributedModel.WithMefAttributedModel(DryIoc.Rules)">
+            <summary>The basic rules to support MEF/DryIoc Attributes for
+            specifying service construction via <see cref="T:System.ComponentModel.Composition.ImportingConstructorAttribute"/>,
+            and for specifying injected dependencies via Import attributes.</summary>
+        </member>
+        <member name="M:DryIoc.MefAttributedModel.AttributedModel.WithMefAttributedModel(DryIoc.IContainer)">
+            <summary>Applies the <see cref="M:DryIoc.MefAttributedModel.AttributedModel.WithMefAttributedModel(DryIoc.Rules)"/> to the container.</summary>
+        </member>
+        <member name="M:DryIoc.MefAttributedModel.AttributedModel.WithImportsSatisfiedNotification(DryIoc.IContainer)">
+            <summary>Registers <see cref="T:System.ComponentModel.Composition.IPartImportsSatisfiedNotification"/> calling decorator into container.
+            It is not directly related to MEF Exports and Imports, and may be used for notifying the injection
+            is completed for normal DryIoc registrations.</summary>
+            <param name="container">Container to support.</param>
+            <returns>The container with made registration.</returns>
+        </member>
+        <member name="M:DryIoc.MefAttributedModel.AttributedModel.WithMefSpecificWrappers(DryIoc.IContainer)">
+            <summary>Registers MEF-specific wrappers into the container.</summary>
+            <remarks>MEF-specific wrappers are: <see cref="T:System.ComponentModel.Composition.ExportFactory`1"/>,
+            <see cref="T:System.ComponentModel.Composition.ExportFactory`2"/> and <see cref="T:System.Lazy`2"/>.</remarks>
+            <param name="container">Container to support.</param>
+            <returns>The container with registration.</returns>
+        </member>
+        <member name="T:DryIoc.MefAttributedModel.AttributedModel.PartAndDisposeActionPair`1">
+            <summary>Proxy for the tuple parameter to <see cref="T:System.ComponentModel.Composition.ExportFactory`1"/>.
+            Required to cover for missing Tuple in .NET 4.0 and lower.
+            Provides implicit conversion in both <see cref="T:System.Collections.Generic.KeyValuePair`2"/> and <see cref="T:System.Tuple`2"/>.</summary>
+        </member>
+        <member name="M:DryIoc.MefAttributedModel.AttributedModel.PartAndDisposeActionPair`1.op_Implicit(DryIoc.MefAttributedModel.AttributedModel.PartAndDisposeActionPair{`0})~System.Collections.Generic.KeyValuePair{`0,System.Action}">
+            <summary>Conversion operator.</summary> <param name="source">to be converted</param>
+        </member>
+        <member name="M:DryIoc.MefAttributedModel.AttributedModel.PartAndDisposeActionPair`1.op_Implicit(DryIoc.MefAttributedModel.AttributedModel.PartAndDisposeActionPair{`0})~System.Tuple{`0,System.Action}">
+            <summary>Conversion operator.</summary> <param name="source">to be converted</param>
+        </member>
+        <member name="F:DryIoc.MefAttributedModel.AttributedModel.PartAndDisposeActionPair`1.Part">
+            <summary>Created export part.</summary>
+        </member>
+        <member name="F:DryIoc.MefAttributedModel.AttributedModel.PartAndDisposeActionPair`1.DisposeAction">
+            <summary>Action to dispose the created part and its dependencies</summary>
+        </member>
+        <member name="M:DryIoc.MefAttributedModel.AttributedModel.PartAndDisposeActionPair`1.#ctor(`0,System.Action)">
+            <summary>Creates a proxy by wrapping the Part and Dispose action.</summary>
+        </member>
+        <member name="M:DryIoc.MefAttributedModel.AttributedModel.CreateExportFactory``1(DryIoc.IContainer,DryIoc.IfUnresolved)">
+            <summary>Creates the <see cref="T:System.ComponentModel.Composition.ExportFactory`1"/>.</summary>
+        </member>
+        <member name="M:DryIoc.MefAttributedModel.AttributedModel.CreateExportFactoryWithMetadata``2(DryIoc.Meta{System.Collections.Generic.KeyValuePair{System.Object,System.Func{``0}},``1},DryIoc.IContainer)">
+            <summary>Creates the <see cref="T:System.ComponentModel.Composition.ExportFactory`2"/>.</summary>
+        </member>
+        <member name="M:DryIoc.MefAttributedModel.AttributedModel.CreateLazyWithMetadata``2(DryIoc.Meta{System.Lazy{``0},``1})">
+            <summary>Creates the <see cref="T:System.Lazy`2"/>.</summary>
+        </member>
+        <member name="M:DryIoc.MefAttributedModel.AttributedModel.WithMultipleSameContractNamesSupport(DryIoc.IContainer)">
+            <summary>Add support for using the same contract name for the same multiple exported types.</summary>
+        </member>
+        <member name="M:DryIoc.MefAttributedModel.AttributedModel.RegisterExports(DryIoc.IRegistrator,System.Collections.Generic.IEnumerable{System.Type})">
+            <summary>Registers implementation type(s) with provided registrator/container.
+            Expects the implementation type with the <see cref="T:System.ComponentModel.Composition.ExportAttribute"/>, <see cref="T:DryIocAttributes.ExportExAttribute"/> or <see cref="T:DryIocAttributes.ExportManyAttribute"/>.</summary>
+        </member>
+        <member name="M:DryIoc.MefAttributedModel.AttributedModel.RegisterExportsAndTypes(DryIoc.IRegistrator,System.Collections.Generic.IEnumerable{System.Type})">
+            <summary>Registers implementation type(s) with provided registrator/container.
+            Expects the implementation type with or without the <see cref="T:System.ComponentModel.Composition.ExportAttribute"/>, <see cref="T:DryIocAttributes.ExportExAttribute"/> or <see cref="T:DryIocAttributes.ExportManyAttribute"/>.</summary>
+        </member>
+        <member name="M:DryIoc.MefAttributedModel.AttributedModel.RegisterExports(DryIoc.IRegistrator,System.Type[])">
+            <summary>Registers implementation type(s) with provided registrator/container.
+            Expects the implementation type with the <see cref="T:System.ComponentModel.Composition.ExportAttribute"/>, <see cref="T:DryIocAttributes.ExportExAttribute"/> or <see cref="T:DryIocAttributes.ExportManyAttribute"/>.</summary>
+        </member>
+        <member name="M:DryIoc.MefAttributedModel.AttributedModel.RegisterExportsAndTypes(DryIoc.IRegistrator,System.Type[])">
+            <summary>Registers implementation type(s) with provided registrator/container.
+            Expects the implementation type with or without the <see cref="T:System.ComponentModel.Composition.ExportAttribute"/>, <see cref="T:DryIocAttributes.ExportExAttribute"/> or <see cref="T:DryIocAttributes.ExportManyAttribute"/>.</summary>
+        </member>
+        <member name="M:DryIoc.MefAttributedModel.AttributedModel.RegisterExports(DryIoc.IRegistrator,System.Collections.Generic.IEnumerable{System.Reflection.Assembly})">
+            <summary>First scans (<see cref="M:DryIoc.MefAttributedModel.AttributedModel.Scan(System.Collections.Generic.IEnumerable{System.Reflection.Assembly})"/>) the provided assemblies to find the types annotated with
+            <see cref="T:System.ComponentModel.Composition.ExportAttribute"/>, <see cref="T:DryIocAttributes.ExportExAttribute"/>, or <see cref="T:DryIocAttributes.ExportManyAttribute"/>.
+            Then registers the found types into registrator/container.</summary>
+        </member>
+        <member name="M:DryIoc.MefAttributedModel.AttributedModel.RegisterExports(DryIoc.IRegistrator,System.Reflection.Assembly[])">
+            <summary>First scans (<see cref="M:DryIoc.MefAttributedModel.AttributedModel.Scan(System.Collections.Generic.IEnumerable{System.Reflection.Assembly})"/>) the provided assemblies to find the types annotated with
+            <see cref="T:System.ComponentModel.Composition.ExportAttribute"/>, <see cref="T:DryIocAttributes.ExportExAttribute"/>, or <see cref="T:DryIocAttributes.ExportManyAttribute"/>.
+            Then registers the found types into registrator/container.</summary>
+        </member>
+        <member name="M:DryIoc.MefAttributedModel.AttributedModel.RegisterExports(DryIoc.IRegistrator,System.Collections.Generic.IEnumerable{DryIoc.MefAttributedModel.ExportedRegistrationInfo})">
+            <summary>Registers new factories into registrator/container based on provided registration info's, which
+            is serializable DTO for registration.</summary>
+        </member>
+        <member name="M:DryIoc.MefAttributedModel.AttributedModel.MakeLazyAndEnsureUniqueServiceKeys(System.Collections.Generic.IEnumerable{DryIoc.MefAttributedModel.ExportedRegistrationInfo})">
+            <summary>Helper to apply laziness to provided registrations.</summary>
+        </member>
+        <member name="M:DryIoc.MefAttributedModel.AttributedModel.RegisterInfo(DryIoc.IRegistrator,DryIoc.MefAttributedModel.ExportedRegistrationInfo,System.Lazy{DryIoc.MefAttributedModel.ServiceKeyStore})">
+            <summary>Registers factories into registrator/container based on single provided info, which could
+            contain multiple exported services with single implementation.</summary>
+        </member>
+        <member name="M:DryIoc.MefAttributedModel.AttributedModel.Scan(System.Collections.Generic.IEnumerable{System.Reflection.Assembly})">
+            <summary>Scans assemblies to find concrete type annotated with <see cref="T:System.ComponentModel.Composition.ExportAttribute"/>, or <see cref="T:DryIocAttributes.ExportManyAttribute"/>
+            attributes, and create serializable DTO with all information required for registering of exported types.</summary>
+        </member>
+        <member name="M:DryIoc.MefAttributedModel.AttributedModel.GetExportedRegistrations(System.Type)">
+            <summary>Creates registration info DTOs for provided type and/or for exported members.
+            If no exports found, the method returns empty enumerable.</summary>
+        </member>
+        <member name="M:DryIoc.MefAttributedModel.AttributedModel.GetExportedRegistrations(System.Type,System.Boolean)">
+            <summary>Creates registration info DTOs for provided type and/or for exported members.
+            If no exports found, the method returns empty enumerable.</summary>
+        </member>
+        <member name="M:DryIoc.MefAttributedModel.AttributedModel.GetLazyTypeRegistrationProvider(System.Collections.Generic.IEnumerable{DryIoc.MefAttributedModel.ExportedRegistrationInfo},System.Func{System.Reflection.Assembly},DryIoc.IfAlreadyRegistered,System.Collections.Generic.IDictionary{System.String,System.Collections.Generic.IList{System.Collections.Generic.KeyValuePair{System.Object,DryIoc.MefAttributedModel.ExportedRegistrationInfo}}})">
+            <summary>Creates and index by service type name.
+            Then returns the factory provider which uses index for fast registration discovery.</summary>
+            <param name="lazyRegistrations">Registrations with <see cref="P:DryIoc.MefAttributedModel.ExportedRegistrationInfo.IsLazy"/> set to true.
+            Consider to call <see cref="M:DryIoc.MefAttributedModel.AttributedModel.MakeLazyAndEnsureUniqueServiceKeys(System.Collections.Generic.IEnumerable{DryIoc.MefAttributedModel.ExportedRegistrationInfo})"/> on registrations before passing them here.</param>
+            <param name="getAssembly">Assembly to load type by name from. NOTE: The assembly will be loaded only once!</param>
+            <param name="ifAlreadyRegistered">(optional) Keep existing registrations by default.</param>
+            <param name="otherServiceExports">(optional) Index to share with other providers,
+            if not specified - each provider will use its own. The index maps the full service name
+            from <paramref name="lazyRegistrations"/> to its registration and (optional) service key pairs.</param>
+            <returns><see cref="T:DryIoc.Rules.DynamicRegistrationProvider"/></returns>
+        </member>
+        <member name="M:DryIoc.MefAttributedModel.AttributedModel.GetLazyTypeRegistrationProvider(System.Collections.Generic.IEnumerable{DryIoc.MefAttributedModel.ExportedRegistrationInfo},System.Func{System.String,System.Type},DryIoc.IfAlreadyRegistered,System.Collections.Generic.IDictionary{System.String,System.Collections.Generic.IList{System.Collections.Generic.KeyValuePair{System.Object,DryIoc.MefAttributedModel.ExportedRegistrationInfo}}})">
+            <summary>Creates and index by service type name.
+            Then returns the factory provider which uses index for fast registration discovery.</summary>
+            <param name="lazyRegistrations">Registrations with <see cref="P:DryIoc.MefAttributedModel.ExportedRegistrationInfo.IsLazy"/> set to true.
+            Consider to call <see cref="M:DryIoc.MefAttributedModel.AttributedModel.MakeLazyAndEnsureUniqueServiceKeys(System.Collections.Generic.IEnumerable{DryIoc.MefAttributedModel.ExportedRegistrationInfo})"/> on registrations before passing them here.</param>
+            <param name="typeProvider">Required for Lazy registration info to create actual Type from type name.</param>
+            <param name="ifAlreadyRegistered">(optional) Keep existing registrations by default.</param>
+            <param name="otherServiceExports">(optional) Index to share with other providers,
+            if not specified - each provider will use its own. The index maps the full service name
+            from <paramref name="lazyRegistrations"/> to its registration and (optional) service key pairs.</param>
+            <returns><see cref="T:DryIoc.Rules.DynamicRegistrationProvider"/></returns>
+        </member>
+        <member name="M:DryIoc.MefAttributedModel.AttributedModel.GetReuse(DryIoc.MefAttributedModel.ReuseInfo)">
+            <summary>Converts reuse info into pre-defined (<see cref="F:DryIoc.MefAttributedModel.AttributedModel.SupportedReuseTypes"/>) or custom reuse object.</summary>
+        </member>
+        <member name="T:DryIoc.MefAttributedModel.ServiceKeyStore">
+            <summary>Enables de-duplication of service key by putting key into the pair with index. </summary>
+        </member>
+        <member name="F:DryIoc.MefAttributedModel.ServiceKeyStore._store">
+            Mapping of ServiceKey/ContractName to { ContractType, count }[]
+        </member>
+        <member name="M:DryIoc.MefAttributedModel.ServiceKeyStore.EnsureUniqueServiceKey(System.Type,System.Object)">
+            <summary>Stores the key with respective type,
+            incrementing type count for multiple registrations with same key  and type.</summary>
+            <param name="serviceType">Type</param> <param name="serviceKey">Key</param>
+            <returns>The key combined with index, if the key has same type more than once,
+            otherwise (for single or nu types) returns passed key as-is..</returns>
+        </member>
+        <member name="M:DryIoc.MefAttributedModel.ServiceKeyStore.GetServiceTypesOrDefault(System.Object)">
+            <summary>Retrieves types and their count used with specified <paramref name="serviceKey"/>.</summary>
+            <param name="serviceKey">Service key to get info.</param>
+            <returns>Types and their count for the specified key, if key is not stored - returns null.</returns>
+        </member>
+        <member name="T:DryIoc.MefAttributedModel.Constants">
+            <summary>Names used by Attributed Model to mark the special exports.</summary>
+        </member>
+        <member name="F:DryIoc.MefAttributedModel.Constants.ExportMetadataDefaultKey">
+            <summary>Predefined key in metadata dictionary for metadata provided as single object (not dictionary).</summary>
+        </member>
+        <member name="F:DryIoc.MefAttributedModel.Constants.InstanceFactory">
+            <summary>Marks the Export generated for type which export its instance members,
+            but should not be resolved as-self by default.</summary>
+        </member>
+        <member name="T:DryIoc.MefAttributedModel.Error">
+            <summary>Defines error codes and messages for <see cref="T:DryIoc.MefAttributedModel.AttributedModelException"/>.</summary>
+        </member>
+        <member name="F:DryIoc.MefAttributedModel.Error.Messages">
+            <summary>Error messages for corresponding codes.</summary>
+        </member>
+        <member name="M:DryIoc.MefAttributedModel.Error.NameOf(System.Int32)">
+            <summary>Returns the name of error with the provided error code.</summary>
+        </member>
+        <member name="T:DryIoc.MefAttributedModel.AttributedModelException">
+            <summary>Specific exception type to be thrown by MefAttributedModel extension. Check <see cref="T:DryIoc.MefAttributedModel.Error"/> for possible error cases.</summary>
+        </member>
+        <member name="M:DryIoc.MefAttributedModel.AttributedModelException.Of(DryIoc.ErrorCheck,System.Int32,System.Object,System.Object,System.Object,System.Object,System.Exception)">
+            <summary>Creates exception by wrapping <paramref name="errorCode"/> and with message corresponding to code.</summary>
+        </member>
+        <member name="T:DryIoc.MefAttributedModel.PrintCode">
+            <summary>Converts provided literal into valid C# code. Used for generating registration code
+            from <see cref="T:DryIoc.MefAttributedModel.ExportedRegistrationInfo"/> DTOs.</summary>
+        </member>
+        <member name="M:DryIoc.MefAttributedModel.PrintCode.AppendBool(System.Text.StringBuilder,System.Boolean)">
+            <summary>Prints valid c# Boolean literal: true/false.</summary>
+        </member>
+        <member name="M:DryIoc.MefAttributedModel.PrintCode.AppendString(System.Text.StringBuilder,System.String)">
+            <summary>Prints valid c# string constant.</summary>
+        </member>
+        <member name="M:DryIoc.MefAttributedModel.PrintCode.AppendType(System.Text.StringBuilder,System.Type)">
+            <summary>Prints valid c# Type literal: <c>typeof(Namespace.Type)</c>.</summary>
+        </member>
+        <member name="M:DryIoc.MefAttributedModel.PrintCode.AppendEnum(System.Text.StringBuilder,System.Type,System.Object)">
+            <summary>Prints valid c# Enum literal: Enum.Value.</summary>
+        </member>
+        <member name="M:DryIoc.MefAttributedModel.PrintCode.AppendDictionary``1(System.Text.StringBuilder,System.Collections.Generic.IDictionary{System.String,``0},System.Func{System.Text.StringBuilder,System.String,``0,System.Text.StringBuilder})">
+            <summary>Prints the <see cref="T:System.Collections.Generic.Dictionary`2"/> where keys are strings.</summary>
+        </member>
+        <member name="M:DryIoc.MefAttributedModel.PrintCode.AppendDictionary(System.Text.StringBuilder,System.Collections.Generic.IDictionary{System.String,System.String})">
+            <summary>Prints the <see cref="T:System.Collections.Generic.Dictionary`2"/> where keys and values are strings.</summary>
+        </member>
+        <member name="M:DryIoc.MefAttributedModel.PrintCode.IsNullable(System.Type)">
+            <summary>Determines whether the type is null-able.</summary>
+        </member>
+        <member name="M:DryIoc.MefAttributedModel.PrintCode.AppendMany``1(System.Text.StringBuilder,System.Collections.Generic.IEnumerable{``0})">
+            <summary>Prints code items.</summary>
+        </member>
+        <member name="M:DryIoc.MefAttributedModel.PrintCode.AppendCode(System.Text.StringBuilder,System.Object,System.Action{System.Text.StringBuilder,System.Object})">
+            <summary>Prints valid c# literal depending of <paramref name="x"/> type.</summary>
+        </member>
+        <member name="T:DryIoc.MefAttributedModel.ExportedRegistrationInfo">
+            <summary>Serializable DTO of all registration information.</summary>
+        </member>
+        <member name="F:DryIoc.MefAttributedModel.ExportedRegistrationInfo.Exports">
+            <summary>All exports defined for implementation type (registration).</summary>
+        </member>
+        <member name="F:DryIoc.MefAttributedModel.ExportedRegistrationInfo.ImplementationType">
+            <summary>Concrete type on what exports are defined: exported type.</summary>
+            <remarks>May be null if <see cref="F:DryIoc.MefAttributedModel.ExportedRegistrationInfo.ImplementationTypeFullName"/> specified.</remarks>
+        </member>
+        <member name="F:DryIoc.MefAttributedModel.ExportedRegistrationInfo.ImplementationTypeFullName">
+            <summary>Full name of exported type. Enables type lazy-loading scenario.</summary>
+        </member>
+        <member name="P:DryIoc.MefAttributedModel.ExportedRegistrationInfo.IsLazy">
+            <summary>Indicate the lazy info with the type defined by its name instead of Runtime Type.</summary>
+        </member>
+        <member name="F:DryIoc.MefAttributedModel.ExportedRegistrationInfo.Reuse">
+            <summary>Specifies the reuse information</summary>
+        </member>
+        <member name="P:DryIoc.MefAttributedModel.ExportedRegistrationInfo.OpenResolutionScope">
+            <summary>Corresponds to <see cref="P:DryIoc.Setup.OpenResolutionScope"/>.</summary>
+        </member>
+        <member name="P:DryIoc.MefAttributedModel.ExportedRegistrationInfo.AsResolutionCall">
+            <summary>Corresponds to <see cref="P:DryIoc.Setup.AsResolutionCall"/>.</summary>
+        </member>
+        <member name="P:DryIoc.MefAttributedModel.ExportedRegistrationInfo.AsResolutionRoot">
+            <summary>Corresponds to <see cref="P:DryIoc.Setup.AsResolutionRoot"/>.</summary>
+        </member>
+        <member name="P:DryIoc.MefAttributedModel.ExportedRegistrationInfo.PreventDisposal">
+            <summary>Specifies to prevent disposal of reused instance if it is disposable</summary>
+        </member>
+        <member name="P:DryIoc.MefAttributedModel.ExportedRegistrationInfo.WeaklyReferenced">
+            <summary>Specifies to store reused instance as WeakReference.</summary>
+        </member>
+        <member name="P:DryIoc.MefAttributedModel.ExportedRegistrationInfo.AllowDisposableTransient">
+            <summary>Allows registering transient disposable. But the disposal is up to you.</summary>
+        </member>
+        <member name="P:DryIoc.MefAttributedModel.ExportedRegistrationInfo.TrackDisposableTransient">
+            <summary>Turns On tracking of disposable transient dependency in parent scope or in open scope if resolved directly.</summary>
+        </member>
+        <member name="P:DryIoc.MefAttributedModel.ExportedRegistrationInfo.UseParentReuse">
+            <summary>Instructs to use parent reuse. Applied only if Reuse is not specified.</summary>
+        </member>
+        <member name="P:DryIoc.MefAttributedModel.ExportedRegistrationInfo.PreferInSingleServiceResolve">
+            <summary>When single service is resolved, but multiple candidates found, this setting will be used to prefer this one.</summary>
+        </member>
+        <member name="P:DryIoc.MefAttributedModel.ExportedRegistrationInfo.AvoidResolutionScopeTracking">
+            <summary>Does not add the resolution scope into the parent or singleton scope,
+            preventing possibly unwanted holding of the scope (and its services) for the lifespan of the container.</summary>
+        </member>
+        <member name="F:DryIoc.MefAttributedModel.ExportedRegistrationInfo.HasMetadataAttribute">
+            <summary>True if exported type has metadata.</summary>
+        </member>
+        <member name="F:DryIoc.MefAttributedModel.ExportedRegistrationInfo.DisposalOrder">
+            <summary>Relative disposal order when defined. Greater number, later dispose.</summary>
+        </member>
+        <member name="F:DryIoc.MefAttributedModel.ExportedRegistrationInfo.Metadata">
+            <summary>Gets or sets the metadata.</summary>
+        </member>
+        <member name="F:DryIoc.MefAttributedModel.ExportedRegistrationInfo.FactoryType">
+            <summary>Factory type to specify <see cref="T:DryIoc.Setup"/>.</summary>
+        </member>
+        <member name="F:DryIoc.MefAttributedModel.ExportedRegistrationInfo.ConditionType">
+            <summary>Type consisting of single method compatible with <see cref="P:DryIoc.Setup.Condition"/> type.</summary>
+        </member>
+        <member name="F:DryIoc.MefAttributedModel.ExportedRegistrationInfo.Decorator">
+            <summary>Not null if exported with <see cref="T:DryIocAttributes.AsDecoratorAttribute"/>, contains info about decorator.</summary>
+        </member>
+        <member name="F:DryIoc.MefAttributedModel.ExportedRegistrationInfo.Wrapper">
+            <summary>Not null if exported with <see cref="T:DryIocAttributes.AsWrapperAttribute"/>, contains info about wrapper.</summary>
+        </member>
+        <member name="F:DryIoc.MefAttributedModel.ExportedRegistrationInfo.FactoryMethodInfo">
+            <summary>Not null for exported members.</summary>
+        </member>
+        <member name="M:DryIoc.MefAttributedModel.ExportedRegistrationInfo.MakeLazy">
+            <summary>Returns new info with type representation as type full name string, instead of
+            actual type.</summary> <returns>New lazy ExportInfo for not lazy this, otherwise - this one.</returns>
+        </member>
+        <member name="M:DryIoc.MefAttributedModel.ExportedRegistrationInfo.EnsureUniqueExportServiceKeys(DryIoc.MefAttributedModel.ServiceKeyStore)">
+            <summary>De-duplicates service keys in export via tracking they uniqueness in passed store.
+            The result key would be a pair of original key and index. If key is already unique it will be returned as-is.</summary>
+            <param name="keyStore">Place to track and check the key uniqueness.</param>
+            <returns>Modifies this, and return this just for fluency.</returns>
+        </member>
+        <member name="M:DryIoc.MefAttributedModel.ExportedRegistrationInfo.CreateFactory(System.Func{System.String,System.Type})">
+            <summary>Creates factory from registration info.</summary>
+            <param name="typeProvider">(optional) Required for Lazy registration info to create actual Type from type name.</param>
+            <returns>Created factory.</returns>
+        </member>
+        <member name="M:DryIoc.MefAttributedModel.ExportedRegistrationInfo.GetOrCreateFactory(System.Func{System.String,System.Type})">
+            <summary>Returns the already created factory if any.</summary>
+        </member>
+        <member name="M:DryIoc.MefAttributedModel.ExportedRegistrationInfo.GetReuse">
+            <summary>Gets the <see cref="T:DryIoc.IReuse"/> instance.</summary>
+        </member>
+        <member name="M:DryIoc.MefAttributedModel.ExportedRegistrationInfo.GetSetup(DryIoc.Made)">
+            <summary>Create factory setup from registration DTO.</summary>
+            <param name="made">(optional) Used for collecting metadata from factory method attributes if any.</param>
+            <returns>Created factory setup.</returns>
+        </member>
+        <member name="M:DryIoc.MefAttributedModel.ExportedRegistrationInfo.Equals(System.Object)">
+            <summary>Compares with another info for equality.</summary>
+        </member>
+        <member name="M:DryIoc.MefAttributedModel.ExportedRegistrationInfo.ToCode(System.Text.StringBuilder)">
+            <summary>Generate valid c# code for instantiating of info from its state. Supposed be used in compile-time scenarios.</summary>
+        </member>
+        <member name="M:DryIoc.MefAttributedModel.ExportedRegistrationInfo.InitExportedMetadata(System.Attribute[])">
+            <summary>Collects the metadata as <see cref="T:System.Collections.Generic.Dictionary`2"/>.</summary>
+        </member>
+        <member name="F:DryIoc.MefAttributedModel.ExportedRegistrationInfo.ToCodeKeySuffix">
+            <summary>Metadata key suffix for the C# representation of the custom attribute constructors.</summary>
+        </member>
+        <member name="T:DryIoc.MefAttributedModel.FactoryMethodInfo">
+            <summary>Serializable info about exported member, aka factory method in DryIoc.</summary>
+        </member>
+        <member name="F:DryIoc.MefAttributedModel.FactoryMethodInfo.DeclaringType">
+            <summary>The type declaring the member.</summary>
+        </member>
+        <member name="F:DryIoc.MefAttributedModel.FactoryMethodInfo.DeclaringTypeFullName">
+            <summary>The declaring type name.</summary>
+        </member>
+        <member name="F:DryIoc.MefAttributedModel.FactoryMethodInfo.MemberName">
+            <summary>Member defining the Export.</summary>
+        </member>
+        <member name="F:DryIoc.MefAttributedModel.FactoryMethodInfo.MethodParameterTypeFullNamesOrNames">
+            <summary>Parameter type full names (and names for generic parameters) to identify the method overload.</summary>
+        </member>
+        <member name="F:DryIoc.MefAttributedModel.FactoryMethodInfo.InstanceFactory">
+            <summary>(optional) Not null for exported instance member which requires factory object, null for static members.</summary>
+        </member>
+        <member name="P:DryIoc.MefAttributedModel.FactoryMethodInfo.IsLazy">
+            <summary>Indicate the lazy info with the type defined by its name instead of Runtime Type.</summary>
+        </member>
+        <member name="M:DryIoc.MefAttributedModel.FactoryMethodInfo.MakeLazy">
+            <summary>Returns new export info with type representation as type full name string, instead of actual type.</summary>
+        </member>
+        <member name="M:DryIoc.MefAttributedModel.FactoryMethodInfo.CreateMade(System.Func{System.String,System.Type})">
+            <summary>Constructs Made out of info properties.</summary>
+        </member>
+        <member name="M:DryIoc.MefAttributedModel.FactoryMethodInfo.Equals(System.Object)">
+            <summary>Determines whether the specified <see cref="T:System.Object" /> is equal to the current <see cref="T:System.Object" />.</summary>
+        </member>
+        <member name="M:DryIoc.MefAttributedModel.FactoryMethodInfo.ToCode(System.Text.StringBuilder)">
+            <summary>Generates valid c# code to re-create the info.</summary>
+        </member>
+        <member name="T:DryIoc.MefAttributedModel.ReuseInfo">
+            <summary>Specifies the standard and custom reuse info.</summary>
+        </member>
+        <member name="F:DryIoc.MefAttributedModel.ReuseInfo.ReuseType">
+            <summary>One of <see cref="F:DryIoc.MefAttributedModel.AttributedModel.SupportedReuseTypes"/>.</summary>
+        </member>
+        <member name="F:DryIoc.MefAttributedModel.ReuseInfo.ScopeName">
+            <summary>Name of the scope to pass to reuse factory from <see cref="F:DryIoc.MefAttributedModel.AttributedModel.SupportedReuseTypes"/>.</summary>
+        </member>
+        <member name="F:DryIoc.MefAttributedModel.ReuseInfo.ScopeNames">
+            <summary>The object names of the scope. Maybe overridden by <see cref="F:DryIoc.MefAttributedModel.ReuseInfo.ScopeName"/></summary>
+        </member>
+        <member name="F:DryIoc.MefAttributedModel.ReuseInfo.CustomReuseType">
+            <summary>Custom reuse type, overrides the <see cref="F:DryIoc.MefAttributedModel.ReuseInfo.ReuseType"/>.</summary>
+        </member>
+        <member name="M:DryIoc.MefAttributedModel.ReuseInfo.Equals(System.Object)">
+            <summary>Compares with another info for equality.</summary>
+        </member>
+        <member name="M:DryIoc.MefAttributedModel.ReuseInfo.ToCode(System.Text.StringBuilder)">
+            <summary>Converts info to the C# code representation.</summary>
+        </member>
+        <member name="T:DryIoc.MefAttributedModel.ExportInfo">
+            <summary>Defines DTO for exported service type and key.</summary>
+        </member>
+        <member name="F:DryIoc.MefAttributedModel.ExportInfo.ServiceType">
+            <summary>Contract type.</summary>
+            <remarks>may be null if <see cref="F:DryIoc.MefAttributedModel.ExportInfo.ServiceTypeFullName"/> specified.</remarks>
+        </member>
+        <member name="F:DryIoc.MefAttributedModel.ExportInfo.ServiceTypeFullName">
+            <summary>Full contract type name. Supposed to be used in lazy-loading scenario.</summary>
+        </member>
+        <member name="F:DryIoc.MefAttributedModel.ExportInfo.ServiceKey">
+            <summary>Wrapped contract name or service key.</summary>
+        </member>
+        <member name="F:DryIoc.MefAttributedModel.ExportInfo.IfAlreadyRegistered">
+            <summary>If already registered option to pass to container registration.</summary>
+        </member>
+        <member name="P:DryIoc.MefAttributedModel.ExportInfo.IsLazy">
+            <summary>Indicate the lazy info with type defined by its name instead of Runtime Type.</summary>
+        </member>
+        <member name="M:DryIoc.MefAttributedModel.ExportInfo.#ctor">
+            <summary>Default constructor is usually required by de-serializer.</summary>
+        </member>
+        <member name="M:DryIoc.MefAttributedModel.ExportInfo.#ctor(System.Type,System.Object,DryIoc.IfAlreadyRegistered)">
+            <summary>Creates exported info out of type and optional key.</summary>
+        </member>
+        <member name="M:DryIoc.MefAttributedModel.ExportInfo.#ctor(System.String,System.Object,DryIoc.IfAlreadyRegistered)">
+            <summary>Creates exported info out of type and optional key.</summary>
+        </member>
+        <member name="M:DryIoc.MefAttributedModel.ExportInfo.Equals(System.Object)">
+            <summary>Compares with another info for equality.</summary>
+            <param name="obj">Other info to compare.</param> <returns>True if equal.</returns>
+        </member>
+        <member name="M:DryIoc.MefAttributedModel.ExportInfo.ToCode(System.Text.StringBuilder)">
+            <summary>Generates valid c# code to re-create the info.</summary>
+            <param name="code">Code to append generated code to.</param>
+            <returns>Code with appended generated info.</returns>
+        </member>
+        <member name="M:DryIoc.MefAttributedModel.ExportInfo.MakeLazy">
+            <summary>Returns new export info with type representation as type full name string, instead of
+            actual type.</summary> <returns>New lazy ExportInfo for not lazy this, otherwise - this one.</returns>
+        </member>
+        <member name="T:DryIoc.MefAttributedModel.WrapperInfo">
+            <summary>Defines wrapper setup in serializable way.</summary>
+        </member>
+        <member name="F:DryIoc.MefAttributedModel.WrapperInfo.WrappedServiceTypeArgIndex">
+            <summary>Index of wrapped type argument in open-generic wrapper.</summary>
+        </member>
+        <member name="F:DryIoc.MefAttributedModel.WrapperInfo.AlwaysWrapsRequiredServiceType">
+            <summary>Per name.</summary>
+        </member>
+        <member name="M:DryIoc.MefAttributedModel.WrapperInfo.GetSetup">
+            <summary>Creates Wrapper setup from this info.</summary>
+        </member>
+        <member name="M:DryIoc.MefAttributedModel.WrapperInfo.Equals(System.Object)">
+            <summary>Used to compare wrappers info for equality.</summary>
+        </member>
+        <member name="M:DryIoc.MefAttributedModel.WrapperInfo.ToCode(System.Text.StringBuilder)">
+            <summary>Converts info to valid C# code to be used in generation scenario.</summary>
+        </member>
+        <member name="T:DryIoc.MefAttributedModel.DecoratorInfo">
+            <summary>Provides serializable info about Decorator setup.</summary>
+        </member>
+        <member name="F:DryIoc.MefAttributedModel.DecoratorInfo.DecoratedServiceKey">
+            <summary>Decorated service key.</summary>
+        </member>
+        <member name="F:DryIoc.MefAttributedModel.DecoratorInfo.Order">
+            <summary>Controls the order that decorators are registered in the container when multiple decorators are used for a single type.</summary>
+        </member>
+        <member name="F:DryIoc.MefAttributedModel.DecoratorInfo.UseDecorateeReuse">
+            <summary>Instructs to use decorated service reuse. Decorated service may be decorator itself.</summary>
+        </member>
+        <member name="M:DryIoc.MefAttributedModel.DecoratorInfo.GetSetup(System.Func{DryIoc.Request,System.Boolean})">
+            <summary>Converts info to corresponding decorator setup.</summary>
+        </member>
+        <member name="M:DryIoc.MefAttributedModel.DecoratorInfo.Equals(System.Object)">
+            <summary>Compares this info to other info for equality.</summary>
+        </member>
+        <member name="M:DryIoc.MefAttributedModel.DecoratorInfo.ToCode(System.Text.StringBuilder)">
+            <summary>Converts info to valid C# code to be used in generation scenario.</summary>
+        </member>
+    </members>
+</doc>

@@ -1,0 +1,8 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+	
+  <PropertyGroup>
+		<ProjectDomainName>Search</ProjectDomainName>
+		<MyProjectType>Domain</MyProjectType>
+	</PropertyGroup>
+	<Import Project="..\..\CsprojBase.csproj" />
+</Project>

@@ -1,0 +1,13 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+	<PropertyGroup>
+		<ProjectDomainName>User</ProjectDomainName>
+		<MyProjectType>Domain</MyProjectType>
+	</PropertyGroup>
+
+	<ItemGroup>
+	  <Folder Include="Dtos\" />
+	</ItemGroup>
+	<Import Project="..\..\CsprojBase.csproj" />
+
+</Project>

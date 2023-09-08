@@ -1,0 +1,24 @@
+﻿@{
+	ViewData["Title"] = "Home Page";
+}
+<div class="text-center">
+	<h1 class="display-4">Welcome</h1>
+	<div style="text-align:left">
+		@(ViewBag.IsInMicroservicesMode ? "Microservices mode is activated" : "Microservices mode is not activated. To switch just run the \"docker-compose\" instead of UI. IsInMicroservicesMode will be set by \"docker - compose.shared.yml\".").<br />
+		There are two separate Domains(containers) each one has its own projects : Domain, Service(BLL), DAL, ... . Domain layer works like a shared contract and just declares the interfaces, Dtos and DataModels. All containers have access to domain layers of other containers but they don't have their implementation dlls (Services). Only those service interfaces that are marked with WebApiServiceAttribute behave like a WebApi without having any Controller in WebApi layer (by default methods of a WebApi service interface will behave like an Enpoint only if they have WebApiEndpointAttribute). WebApi layers of Domains are empty and just to Add the DynamicWebApiMiddleware to the app.<br />
+		<br />
+		Service results : <br />
+		SearchService.GetSomeString("aa").Value : @ViewBag.StringResult<br />
+		JsonSerializer.Serialize(SearchService.GetSomeDto().Value) : @ViewBag.DtoResult<br />
+		@foreach (var r in ViewBag.CollectorAsyncResults)
+		{
+			@:BeforeAwait : @ViewBag.BeforeAwait<br/>
+			@:@r.Key : @r.Value<br/>
+			@:AfterAwait : @ViewBag.AfterAwait<br/>
+		}
+		BeforeAsync : @ViewBag.BeforeAsync<br />
+		AfterAsync: @ViewBag.AfterAsync<br/>
+	</div>
+	In case of any new change to services don't forget that UI layer doesn't have any dependency on service layers (even in monolith mode) and we have to build them separately or through the entire solution.
+	Though things are different in microservices mode and Dockerfile builds services.
+</div>

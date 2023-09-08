@@ -1,0 +1,13 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+	<PropertyGroup>
+		<ProjectDomainName>Search</ProjectDomainName>
+		<MyProjectType>DataAccess</MyProjectType>
+	</PropertyGroup>
+
+	<ItemGroup>
+	  <Folder Include="Migrations\" />
+	</ItemGroup>
+	<Import Project="..\..\CsprojBase.csproj" />
+
+</Project>

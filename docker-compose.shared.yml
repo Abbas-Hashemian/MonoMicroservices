@@ -1,0 +1,28 @@
+version: '3.4'
+
+services:
+  shared_configs:
+    build:
+      context: .
+      dockerfile: Dockerfile
+      args: #will be passed to Dockerfile
+        - MySolutionName=MonoMicroservices
+        - Configuration=Release
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Production
+      - IsInMicroservicesMode=true
+      - 'MicroservicesConnections={
+          "SearchDomain":"http://host.docker.internal:5102",
+          "CollectorService":{"Service1":"http://host.docker.internal:5102","Service2":"http://host.docker.internal:5102"}
+        }'
+  dev_shared_configs:
+    build:
+      args:
+        - Configuration=Debug
+    environment:
+      - ASPNETCORE_ENVIRONMENT=${Env}
+      - ASPNETCORE_URLS=http://+:80
+      # - ASPNETCORE_URLS=https://+:443;http://+:80
+    volumes:
+      - ${APPDATA}/ASP.NET/Https:/root/.aspnet/https:ro
+      # - ./.vs-debugger:/root/.vs-debugger

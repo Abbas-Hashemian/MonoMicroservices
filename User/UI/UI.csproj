@@ -1,0 +1,20 @@
+﻿<Project Sdk="Microsoft.NET.Sdk.Web">
+
+	<PropertyGroup>
+		<MyProjectType>UI</MyProjectType>
+	</PropertyGroup>
+	<Import Project="..\..\CsprojBase.csproj" />
+
+	<!--<PropertyGroup>
+		<PackageId>$(AssemblyName)</PackageId>
+
+		<TargetFramework>netcoreapp3.1</TargetFramework> warning! take care of CsprojBase.csproj
+		<ImplicitUsings>enable</ImplicitUsings> Not available in C# 8 (core 3.1)
+	</PropertyGroup>-->
+	
+	<ItemGroup>
+		<ProjectReference Include="..\UserDomain\UserDomain.csproj" />
+		<ProjectReference Include="..\..\Search\SearchDomain\SearchDomain.csproj" />
+	</ItemGroup>
+	
+</Project>

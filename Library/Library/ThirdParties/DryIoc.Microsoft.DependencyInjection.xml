@@ -1,0 +1,193 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>DryIoc.Microsoft.DependencyInjection</name>
+    </assembly>
+    <members>
+        <member name="T:DryIoc.Microsoft.DependencyInjection.DryIocServiceProviderFactory">
+             <summary>
+             This DryIoc is supposed to be used with generic `IHostBuilder` like this:
+             
+             <code><![CDATA[
+             public class Program
+             {
+                 public static async Task Main(string[] args) => 
+                     await CreateHostBuilder(args).Build().RunAsync();
+             
+                 Rules WithMyRules(Rules currentRules) => currentRules;
+            
+                 public static IHostBuilder CreateHostBuilder(string[] args) =>
+                     Host.CreateDefaultBuilder(args)
+                         .UseServiceProviderFactory(new DryIocServiceProviderFactory(new Container(rules => WithMyRules(rules))))
+                         .ConfigureWebHostDefaults(webBuilder =>
+                         {
+                             webBuilder.UseStartup<Startup>();
+                         });
+             }
+             ]]></code>
+             
+             Then register your services in `Startup.ConfigureContainer`.
+             
+             DON'T try to change the container rules there - they will be lost, 
+             instead pass the pre-configured container to `DryIocServiceProviderFactory` as in example above.
+             By default container will use <see href="DryIoc.Rules.MicrosoftDependencyInjectionRules" />
+             
+             DON'T forget to add `services.AddControllers().AddControllersAsServices()` in `Startup.ConfigureServices` 
+             in order to access DryIoc diagnostics for controllers, property-injection, etc.
+             
+             </summary>
+        </member>
+        <member name="M:DryIoc.Microsoft.DependencyInjection.DryIocServiceProviderFactory.#ctor(DryIoc.IContainer,System.Func{DryIoc.IRegistrator,Microsoft.Extensions.DependencyInjection.ServiceDescriptor,System.Boolean})">
+            <summary>
+            We won't initialize the container here because it is logically expected to be done in `CreateBuilder`,
+            so the factory constructor is just saving some options to use later.
+            </summary>
+        </member>
+        <member name="M:DryIoc.Microsoft.DependencyInjection.DryIocServiceProviderFactory.#ctor(DryIoc.IContainer,DryIoc.RegistrySharing,System.Func{DryIoc.IRegistrator,Microsoft.Extensions.DependencyInjection.ServiceDescriptor,System.Boolean})">
+            <summary>
+            `container` is the existing container which will be cloned with the MS.DI rules and its cache will be dropped,
+            unless the `registrySharing` is set to the `RegistrySharing.Share` or to `RegistrySharing.CloneButKeepCache`.
+            `registerDescriptor` is the custom service descriptor handler.
+            </summary>
+        </member>
+        <member name="M:DryIoc.Microsoft.DependencyInjection.DryIocServiceProviderFactory.CreateBuilder(Microsoft.Extensions.DependencyInjection.IServiceCollection)">
+            <inheritdoc />
+        </member>
+        <member name="M:DryIoc.Microsoft.DependencyInjection.DryIocServiceProviderFactory.CreateServiceProvider(DryIoc.IContainer)">
+            <summary>The <paramref name="container"/> is the container returned by the <see cref="M:DryIoc.Microsoft.DependencyInjection.DryIocServiceProviderFactory.CreateBuilder(Microsoft.Extensions.DependencyInjection.IServiceCollection)"/> method.</summary>
+        </member>
+        <member name="T:DryIoc.Microsoft.DependencyInjection.DryIocAdapter">
+            <summary>Adapts DryIoc container to be used as MS.DI service provider, plus provides the helpers
+            to simplify work with adapted container.</summary>
+        </member>
+        <member name="M:DryIoc.Microsoft.DependencyInjection.DryIocAdapter.WithDependencyInjectionAdapter(DryIoc.IContainer,System.Collections.Generic.IEnumerable{Microsoft.Extensions.DependencyInjection.ServiceDescriptor},System.Func{DryIoc.IRegistrator,Microsoft.Extensions.DependencyInjection.ServiceDescriptor,System.Boolean},DryIoc.RegistrySharing)">
+             <summary>Adapts passed <paramref name="container"/> to Microsoft.DependencyInjection conventions,
+             registers DryIoc implementations of <see cref="T:System.IServiceProvider"/> and <see cref="T:Microsoft.Extensions.DependencyInjection.IServiceScopeFactory"/>,
+             and returns NEW container.
+             </summary>
+             <param name="container">Source container to adapt.</param>
+             <param name="descriptors">(optional) Specify service descriptors or use <see cref="M:DryIoc.Microsoft.DependencyInjection.DryIocAdapter.Populate(DryIoc.IContainer,System.Collections.Generic.IEnumerable{Microsoft.Extensions.DependencyInjection.ServiceDescriptor},System.Func{DryIoc.IRegistrator,Microsoft.Extensions.DependencyInjection.ServiceDescriptor,System.Boolean})"/> later.</param>
+             <param name="registerDescriptor">(optional) Custom registration action, should return true to skip normal registration.</param>
+             <param name="registrySharing">(optional) Use DryIoc <see cref="T:DryIoc.RegistrySharing"/> capability.</param>
+             <example>
+             <code><![CDATA[
+             
+                 var container = new Container();
+            
+                 // you may register the services here:
+                 container.Register<IMyService, MyService>(Reuse.Scoped)
+             
+                 // applies the MS.DI rules and registers the infrastructure helpers and service collection to the container
+                 var adaptedContainer = container.WithDependencyInjectionAdapter(services); 
+            
+                 // the container implements IServiceProvider
+                 IServiceProvider serviceProvider = adaptedContainer;
+            
+            ]]></code>
+             </example>
+             <remarks>You still need to Dispose adapted container at the end / application shutdown.</remarks>
+        </member>
+        <member name="M:DryIoc.Microsoft.DependencyInjection.DryIocAdapter.CreateServiceProvider(Microsoft.Extensions.DependencyInjection.IServiceCollection)">
+            <summary>Sugar to create the DryIoc container and adapter populated with services</summary>
+        </member>
+        <member name="M:DryIoc.Microsoft.DependencyInjection.DryIocAdapter.WithCompositionRoot(DryIoc.IContainer,System.Type)">
+            <summary>Adds services registered in <paramref name="compositionRootType"/> to container</summary>
+        </member>
+        <member name="M:DryIoc.Microsoft.DependencyInjection.DryIocAdapter.WithCompositionRoot``1(DryIoc.IContainer)">
+            <summary>Adds services registered in <typeparamref name="TCompositionRoot"/> to container</summary>
+        </member>
+        <member name="M:DryIoc.Microsoft.DependencyInjection.DryIocAdapter.BuildServiceProvider(DryIoc.IContainer)">
+            <summary>It does not really build anything, it just gets the `IServiceProvider` from the container.</summary>
+        </member>
+        <member name="M:DryIoc.Microsoft.DependencyInjection.DryIocAdapter.GetServiceProvider(DryIoc.IResolver)">
+            <summary>Just gets the `IServiceProvider` from the container.</summary>
+        </member>
+        <member name="M:DryIoc.Microsoft.DependencyInjection.DryIocAdapter.ConfigureServiceProvider``1(DryIoc.IContainer)">
+            <summary>Facade to consolidate DryIoc registrations in <typeparamref name="TCompositionRoot"/></summary>
+            <typeparam name="TCompositionRoot">The class will be created by container on Startup 
+            to enable registrations with injected <see cref="T:DryIoc.IRegistrator"/> or full <see cref="T:DryIoc.IContainer"/>.</typeparam>
+            <param name="container">Adapted container</param> <returns>Service provider</returns>
+            <example>
+            <code><![CDATA[
+            public class ExampleCompositionRoot
+            {
+               // if you need the whole container then change parameter type from IRegistrator to IContainer
+               public ExampleCompositionRoot(IRegistrator r)
+               {
+                   r.Register<ISingletonService, SingletonService>(Reuse.Singleton);
+                   r.Register<ITransientService, TransientService>(Reuse.Transient);
+                   r.Register<IScopedService, ScopedService>(Reuse.InCurrentScope);
+               }
+            }
+            ]]></code>
+            </example>
+        </member>
+        <member name="M:DryIoc.Microsoft.DependencyInjection.DryIocAdapter.Populate(DryIoc.IContainer,System.Collections.Generic.IEnumerable{Microsoft.Extensions.DependencyInjection.ServiceDescriptor},System.Func{DryIoc.IRegistrator,Microsoft.Extensions.DependencyInjection.ServiceDescriptor,System.Boolean})">
+            <summary>Registers service descriptors into container. May be called multiple times with different service collections.</summary>
+            <param name="container">The container.</param>
+            <param name="descriptors">The service descriptors.</param>
+            <param name="registerDescriptor">(optional) Custom registration action, should return true to skip normal registration.</param>
+            <example>
+            <code><![CDATA[
+                // example of normal descriptor registration together with factory method registration for SomeService.
+                container.Populate(services, (r, service) => {
+                    if (service.ServiceType == typeof(SomeService)) {
+                        r.Register<SomeService>(Made.Of(() => CreateCustomService()), Reuse.Singleton);
+                        return true;
+                    };
+                    return false; // fallback to normal registrations for the rest of the descriptors.
+                });
+            ]]></code>
+            </example>
+        </member>
+        <member name="M:DryIoc.Microsoft.DependencyInjection.DryIocAdapter.ToReuse(Microsoft.Extensions.DependencyInjection.ServiceLifetime)">
+            <summary>Converts the MS.DI ServiceLifetime into the corresponding `DryIoc.IReuse`</summary>
+        </member>
+        <member name="M:DryIoc.Microsoft.DependencyInjection.DryIocAdapter.RegisterDescriptor(DryIoc.IContainer,Microsoft.Extensions.DependencyInjection.ServiceDescriptor)">
+            <summary>Unpacks the service descriptor to register the service in DryIoc container
+            with the default MS.DI convention of `IfAlreadyRegistered.AppendNotKeyed`</summary>
+        </member>
+        <member name="M:DryIoc.Microsoft.DependencyInjection.DryIocAdapter.RegisterDescriptor(DryIoc.IContainer,Microsoft.Extensions.DependencyInjection.ServiceDescriptor,DryIoc.IfAlreadyRegistered,System.Object)">
+            <summary>Unpacks the service descriptor to register the service in DryIoc container
+            with the specific `IfAlreadyRegistered` policy and the optional `serviceKey`</summary>
+        </member>
+        <member name="T:DryIoc.Microsoft.DependencyInjection.DryIocServiceScopeFactory">
+            <summary>[Obsolete("The implementation of `IServiceScopeFactory` is moved to `DryIocServiceProviderCapabilities`")]</summary>
+        </member>
+        <member name="M:DryIoc.Microsoft.DependencyInjection.DryIocServiceScopeFactory.#ctor(DryIoc.IResolverContext)">
+            <summary>Stores passed scoped container to open nested scope.</summary>
+            <param name="scopedResolver">Scoped container to be used to create nested scope.</param>
+        </member>
+        <member name="M:DryIoc.Microsoft.DependencyInjection.DryIocServiceScopeFactory.CreateScope">
+            <summary>Opens scope and wraps it into DI <see cref="T:Microsoft.Extensions.DependencyInjection.IServiceScope"/> interface.</summary>
+            <returns>DI wrapper of opened scope.</returns>
+        </member>
+        <member name="T:DryIoc.Microsoft.DependencyInjection.DryIocServiceScope">
+            <summary>Bare-bones IServiceScope implementations</summary>
+        </member>
+        <member name="P:DryIoc.Microsoft.DependencyInjection.DryIocServiceScope.ServiceProvider">
+            <inheritdoc />
+        </member>
+        <member name="M:DryIoc.Microsoft.DependencyInjection.DryIocServiceScope.#ctor(DryIoc.IResolverContext)">
+            <summary>Creating from resolver context</summary>
+        </member>
+        <member name="M:DryIoc.Microsoft.DependencyInjection.DryIocServiceScope.Dispose">
+            <summary>Disposes the underlying resolver context</summary>
+        </member>
+        <member name="T:DryIoc.Microsoft.DependencyInjection.DryIocServiceProviderCapabilities">
+            <summary>Impl of `IsRegistered`, `GetRequiredService`, `CreateScope`.</summary>
+        </member>
+        <member name="M:DryIoc.Microsoft.DependencyInjection.DryIocServiceProviderCapabilities.#ctor(DryIoc.IContainer)">
+            <summary>Statefully wraps the passed <paramref name="container"/></summary>
+        </member>
+        <member name="M:DryIoc.Microsoft.DependencyInjection.DryIocServiceProviderCapabilities.IsService(System.Type)">
+            <inheritdoc />
+        </member>
+        <member name="M:DryIoc.Microsoft.DependencyInjection.DryIocServiceProviderCapabilities.GetRequiredService(System.Type)">
+            <inheritdoc />
+        </member>
+        <member name="M:DryIoc.Microsoft.DependencyInjection.DryIocServiceProviderCapabilities.CreateScope">
+            <inheritdoc />
+        </member>
+    </members>
+</doc>

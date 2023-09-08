@@ -1,0 +1,58 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+	<PropertyGroup Condition="'$(MyProjectType)' != 'NUnitTest'">
+		<ProjectDomainName>Library</ProjectDomainName>
+		<MyProjectType>Library</MyProjectType>
+		<AssemblyVersion>0.1.0.0</AssemblyVersion>
+		<FileVersion>0.1.0.0</FileVersion>
+	</PropertyGroup>
+	<Import Project="..\..\CsprojBase.csproj" />
+	<!--<PropertyGroup Condition="'$(MyProjectType)' != 'NUnitTest'">
+		<GeneratePackageOnBuild>True</GeneratePackageOnBuild>
+	</PropertyGroup>-->
+
+	<ItemGroup Condition="'$(MyProjectType)' != 'NUnitTest'">
+		<AssemblyAttribute Include="System.Runtime.CompilerServices.InternalsVisibleTo">
+			<_Parameter1>$(MySolutionName).LibraryTests</_Parameter1>
+		</AssemblyAttribute>
+		<AssemblyAttribute Include="System.Runtime.CompilerServices.InternalsVisibleTo">
+			<_Parameter1>$(MySolutionName).TestUtils</_Parameter1>
+		</AssemblyAttribute>
+		<AssemblyAttribute Include="System.Runtime.CompilerServices.InternalsVisibleTo">
+			<_Parameter1>$(MySolutionName).UI</_Parameter1>
+		</AssemblyAttribute>
+		<AssemblyAttribute Include="System.Runtime.CompilerServices.InternalsVisibleTo">
+			<_Parameter1>$(MySolutionName).SearchWebApi</_Parameter1>
+		</AssemblyAttribute>
+	</ItemGroup>
+
+	<ItemGroup Condition="'$(MyProjectType)' != 'NUnitTest'">
+		<Compile Remove="ThirdParties\**" />
+		<EmbeddedResource Remove="ThirdParties\**" />
+		<None Remove="ThirdParties\**" />
+	  <None Remove="Helpers\DynamicImplementorBackup.txt" />
+	</ItemGroup>
+	
+	<ItemGroup>
+		<!--Dont forget the "Shared references" section of "CsprojBase.csproj"-->
+		<!--EFCore & Db configs-->
+		<PackageReference Include="Microsoft.EntityFrameworkCore" Version="6.0.16" />
+		<PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="6.0.16">
+			<IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+			<PrivateAssets>all</PrivateAssets>
+		</PackageReference>
+		<PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="6.0.16" />
+
+		<!--Microservices-->
+		<PackageReference Include="RabbitMQ.Client" Version="6.2.1" />
+		<!--mscorlib and ILGenerator SymInfo-->
+		<!--<COMReference Include="{bed7f4ea-1a96-11d2-8f08-00a0c9a6186d}">
+			<WrapperTool>tlbimp</WrapperTool>
+			<VersionMinor>4</VersionMinor>
+			<VersionMajor>2</VersionMajor>
+			<Guid>bed7f4ea-1a96-11d2-8f08-00a0c9a6186d</Guid>
+		</COMReference>-->
+		<!--<PackageReference Include="Polly" Version="7.2.4" />-->
+	</ItemGroup>
+
+</Project>

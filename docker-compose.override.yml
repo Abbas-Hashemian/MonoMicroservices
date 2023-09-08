@@ -1,0 +1,13 @@
+version: '3.4'
+
+services:
+  user:
+    extends:
+      file: docker-compose.shared.yml
+      service: dev_shared_configs
+    volumes:
+      - ${APPDATA}/Microsoft/UserSecrets:/root/.microsoft/usersecrets:ro
+  search:
+    extends:
+      file: docker-compose.shared.yml
+      service: dev_shared_configs
