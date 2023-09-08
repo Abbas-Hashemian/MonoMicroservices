@@ -137,7 +137,7 @@ IocService.Resolve<IMyService>("ContainerTwoServiceKey")
 ```
 
 ### What is not supported yet
- 1. Generic Type parameters, I was thinking the external published services (WebAPIs) would most likely be simple.
+ 1. Type parameters (like MyMethod&lt;ADto&gt;()), I was thinking the external published services (WebAPIs) would most likely be simple.
  2. "ref" and "out" parameters.
  3. Properties and Fields of service interface
  4. gRPC
