@@ -135,6 +135,7 @@ IocService.Resolve<IMyService>("ContainerTwoServiceKey")
 //So the best solution would be to have a method (because properties are not supported yet)
 // that returns the service key.
 ```
+ > Someone may ask why service key is used? Because multiple implementations may be placed in one container and concurrently in many other containers.
 
 ### What is not supported yet
  1. Type parameters (like MyMethod&lt;ADto&gt;()), I was thinking the external published services (WebAPIs) would most likely be simple.
