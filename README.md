@@ -126,7 +126,7 @@ public interface IMyService {}
 public class MyService : IMyService {}	//in the namespace of container one
 [Export("ContainerTwoServiceKey", typeof(IMyService))]
 public class MyService : IMyService {} //in the namespace of container two
-IocService.Resolve<IEnumerable<IMyService>>().Selecy(service=>...service.__ServiceKey...);
+IocService.Resolve<IEnumerable<IMyService>>().Select(service=>...service.__ServiceKey...);
 IocService.Resolve<IMyService>("ContainerTwoServiceKey")
 //Note: in microservices mode, for multi resolves, there is a magic property in service
 // named "__ServiceKey" that will not be available in monolith.
